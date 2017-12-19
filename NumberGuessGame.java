@@ -117,6 +117,24 @@ public class NumberGuessGame {
 			
 		});
 		
+		
+		continueButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if ( success == true ) {
+					level++;
+				}
+				numberGuess.setLevel(level);
+				numberGuess.generateSecretNumber();
+				attempt = 0;
+				attemtLabel.setText("Attempt " + attempt);
+				guessNumberLabel.setText("Guess a Number : 0 .. " + numberGuess.getLimit());
+				continueButton.setVisible(false);
+				
+			}
+			
+			
+		});
+		
 		return panel;
 	}
 
