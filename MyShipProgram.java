@@ -29,6 +29,7 @@ public class MyShipProgram extends JFrame {
 			super.paintComponent(g);
 			setBackground(Color.BLACK);
 			
+			astroid.move();
 			g.drawImage(ship.img, ship.x, ship.y, this);
 			g.drawImage(astroid.img, astroid.x, astroid.y, this);
 		}
@@ -83,7 +84,7 @@ public class MyShipProgram extends JFrame {
 		Timer t = new Timer(30, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				astroid.move();
+				
 				repaint();
 			}
 		});
