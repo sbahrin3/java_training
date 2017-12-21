@@ -39,10 +39,13 @@ public class MyShipProgram extends JFrame {
 			ship.move();
 			astroid.move();
 			laser.move();
+			astroid.collideWithLaser();
+
 			
 			g.drawImage(ship.img, ship.x, ship.y, this);
 			g.drawImage(astroid.img, astroid.x, astroid.y, this);
 			g.drawImage(laser.img, laser.x, laser.y, this);
+			
 		}
 	}
 	
@@ -113,37 +116,63 @@ public class MyShipProgram extends JFrame {
 	
 	class Astroid {
 		Image img;
+		Image imgExplosion;
 		int x = 200;
 		int y = 10;
 		int d = 0;
+		boolean exploded = false;
 		
 		Astroid() {
 			img = Toolkit.getDefaultToolkit().getImage("C:/sprites/asteroid.png");
+			imgExplosion = Toolkit.getDefaultToolkit().getImage("C:/sprites/explosion.png");
 		}
 		
 		void move() {
-			if ( d == 0 ) {
-				x = x - 10;
-			} else {
-				x = x + 10;
-			}
-			if ( x < 0 ) {
-				d = 1;
-			}
-			if ( x > 700 ) {
-				d = 0;
+			if ( !exploded ) {
+				if ( d == 0 ) {
+					x = x - 10;
+				} else {
+					x = x + 10;
+				}
+				if ( x < 0 ) {
+					d = 1;
+				}
+				if ( x > 700 ) {
+					d = 0;
+				}
 			}
 		}
-		
+
+		void collideWithLaser() {
+			boolean hitY = false;
+			boolean hitX = false;
+			if (laser.y < y  && laser.y > y - 200) {
+				hitY = true;
+			}
+			if ( laser.x > x && laser.x < x + 200 ) {
+				hitX = true;
+			}
+			if ( hitX && hitY ) {
+				exploded = true;
+				System.out.println("Collision happened");
+			}
+			if ( exploded ) {
+				img = imgExplosion;
+				astroid.x = 100;
+				astroid.y = -100;
+			}
+
+		}
+
 	}
 	
 	class Laser {
 		Image img;
 		int x = -100;
-		int y = -100;
+		int y = 1000;
 		int d = 5;
 		int laserTime = 0;
-		int laserSpeed = 2;
+		int laserSpeed = 1;
 		
 		Laser() {
 			img = Toolkit.getDefaultToolkit().getImage("C:/sprites/laser.png");
@@ -152,14 +181,14 @@ public class MyShipProgram extends JFrame {
 		void move() {
 			
 			if ( ship.fired ) {
-				laserTime++;
-				if ( laserTime > laserSpeed ) {
-					laser.y = laser.y - 50;
-					laserTime = 0;
-				}
+				
+				laser.y = laser.y - 15;
+			
 				if ( laser.y < 0 ) {
 					ship.fired = false;
+					laser.y = 1000;
 				}
+				
 			}
 		}
 		
@@ -169,6 +198,7 @@ public class MyShipProgram extends JFrame {
 		
 	}
 	
+
 	public void run() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(width, height);
@@ -178,6 +208,7 @@ public class MyShipProgram extends JFrame {
 		ship = new Ship();
 		astroid = new Astroid();
 		laser = new Laser();
+
 		
 		add(canvas);
 
