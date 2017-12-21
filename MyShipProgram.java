@@ -40,14 +40,22 @@ public class MyShipProgram extends JFrame {
 	
 	class Ship {
 		Image img;
+		Image[] images = new Image[3];
 		int x = 200;
 		int y = 500;
 		int moveDirection = 0; //0-not moving, 1-go right, 2-go left
 		int moveSpeed = 10;
+		int animTime = 0;
+		int animFrame = 0;
+		
 		
 		Ship() {
 			img = Toolkit.getDefaultToolkit().getImage("C:/sprites/ship.png");
+			images[0] = Toolkit.getDefaultToolkit().getImage("C:/sprites/ship1.png");
+			images[1] = Toolkit.getDefaultToolkit().getImage("C:/sprites/ship2.png");
+			images[2] = Toolkit.getDefaultToolkit().getImage("C:/sprites/ship3.png");
 		}
+		
 		
 		void move() {
 			if ( moveDirection > 0 ) {
@@ -62,7 +70,15 @@ public class MyShipProgram extends JFrame {
 		}
 		
 		void animate() {
-			
+			img = images[animFrame];
+			animTime++;
+			if ( animTime > 1 ) {
+				animFrame++;
+				animTime = 0;
+			}
+			if ( animFrame > 2 ) {
+				animFrame = 0;
+			}
 		}
 	}
 	
@@ -136,6 +152,6 @@ public class MyShipProgram extends JFrame {
 		MyShipProgram p = new MyShipProgram();
 		p.run();
 	}
-	
+	  
 
-} 
+}
