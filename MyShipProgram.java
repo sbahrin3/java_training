@@ -20,7 +20,7 @@ public class MyShipProgram extends JFrame {
 	Ship ship;
 	Astroid astroid;
 	int width = 800;
-	int height = 500;
+	int height = 700;
 	int x = width/2;
 	int y = height - 200;
 	
@@ -29,7 +29,10 @@ public class MyShipProgram extends JFrame {
 			super.paintComponent(g);
 			setBackground(Color.BLACK);
 			
+			ship.animate();
+			ship.move();
 			astroid.move();
+			
 			g.drawImage(ship.img, ship.x, ship.y, this);
 			g.drawImage(astroid.img, astroid.x, astroid.y, this);
 		}
@@ -38,10 +41,28 @@ public class MyShipProgram extends JFrame {
 	class Ship {
 		Image img;
 		int x = 200;
-		int y = 300;
+		int y = 500;
+		int moveDirection = 0; //0-not moving, 1-go right, 2-go left
+		int moveSpeed = 10;
 		
 		Ship() {
 			img = Toolkit.getDefaultToolkit().getImage("C:/sprites/ship.png");
+		}
+		
+		void move() {
+			if ( moveDirection > 0 ) {
+				if ( x < width - 100 ) x = x + moveSpeed;
+			}
+			else if ( moveDirection < 0 ) {
+				if ( x > 0 ) x = x - moveSpeed;
+			}
+			else {
+				x = x;
+			}
+		}
+		
+		void animate() {
+			
 		}
 	}
 	
@@ -74,6 +95,7 @@ public class MyShipProgram extends JFrame {
 	public void run() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(width, height);
+		setResizable(false);
 		
 		canvas = new MyCanvas();
 		ship = new Ship();
@@ -84,7 +106,6 @@ public class MyShipProgram extends JFrame {
 		Timer t = new Timer(30, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
 				repaint();
 			}
 		});
@@ -96,16 +117,13 @@ public class MyShipProgram extends JFrame {
 			public void keyPressed(KeyEvent e) {
 				
 				if ( e.getKeyCode() ==  KeyEvent.VK_LEFT) {
-					ship.x = ship.x - 10;
+					ship.moveDirection = -1;
 				}
 				else if ( e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					ship.x = ship.x + 10;
+					ship.moveDirection = 1;
 				}
 				if ( e.getKeyCode() == KeyEvent.VK_UP ) {
-					ship.y = ship.y - 10;
-				}
-				else if ( e.getKeyCode() == KeyEvent.VK_DOWN ) {
-					ship.y = ship.y + 10;
+					ship.moveDirection = 0;
 				}
 				
 			}
