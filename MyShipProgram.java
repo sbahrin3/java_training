@@ -1,6 +1,9 @@
 package my.game;
 
 import javax.swing.Timer;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -12,13 +15,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.EventObject;
+import java.io.File;
+import java.io.IOException;
+
 
 public class MyShipProgram extends JFrame {
 	
 	MyCanvas canvas;
 	Ship ship;
 	Astroid astroid;
+	Laser laser;
 	int width = 800;
 	int height = 700;
 	int x = width/2;
@@ -32,9 +38,11 @@ public class MyShipProgram extends JFrame {
 			ship.animate();
 			ship.move();
 			astroid.move();
+			laser.move();
 			
 			g.drawImage(ship.img, ship.x, ship.y, this);
 			g.drawImage(astroid.img, astroid.x, astroid.y, this);
+			g.drawImage(laser.img, laser.x, laser.y, this);
 		}
 	}
 	
@@ -47,6 +55,7 @@ public class MyShipProgram extends JFrame {
 		int moveSpeed = 10;
 		int animTime = 0;
 		int animFrame = 0;
+		boolean fired = false;
 		
 		
 		Ship() {
@@ -80,6 +89,26 @@ public class MyShipProgram extends JFrame {
 				animFrame = 0;
 			}
 		}
+		
+		void fire() {
+			fired = true;
+			File soundFile = new File("C:/sprites/laser.wav");
+			try {
+				
+				AudioInputStream audio = AudioSystem.getAudioInputStream(soundFile);
+				Clip clip = AudioSystem.getClip();
+				clip.open(audio);
+				clip.start();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 
+			
+			laser.x = ship.x + 45;
+			laser.y = ship.y - 20;
+			
+		}
+		
 	}
 	
 	class Astroid {
@@ -108,6 +137,38 @@ public class MyShipProgram extends JFrame {
 		
 	}
 	
+	class Laser {
+		Image img;
+		int x = -100;
+		int y = -100;
+		int d = 5;
+		int laserTime = 0;
+		int laserSpeed = 2;
+		
+		Laser() {
+			img = Toolkit.getDefaultToolkit().getImage("C:/sprites/laser.png");
+		}
+		
+		void move() {
+			
+			if ( ship.fired ) {
+				laserTime++;
+				if ( laserTime > laserSpeed ) {
+					laser.y = laser.y - 50;
+					laserTime = 0;
+				}
+				if ( laser.y < 0 ) {
+					ship.fired = false;
+				}
+			}
+		}
+		
+		void animate() {
+			
+		}
+		
+	}
+	
 	public void run() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(width, height);
@@ -116,6 +177,7 @@ public class MyShipProgram extends JFrame {
 		canvas = new MyCanvas();
 		ship = new Ship();
 		astroid = new Astroid();
+		laser = new Laser();
 		
 		add(canvas);
 
@@ -141,6 +203,12 @@ public class MyShipProgram extends JFrame {
 				if ( e.getKeyCode() == KeyEvent.VK_UP ) {
 					ship.moveDirection = 0;
 				}
+				if ( e.getKeyCode() == KeyEvent.VK_DOWN ) {
+					ship.moveDirection = 0;
+				}
+				if ( e.getKeyCode() == KeyEvent.VK_SPACE ) {
+					if ( !ship.fired ) ship.fire();
+				}
 				
 			}
 		});
@@ -152,6 +220,6 @@ public class MyShipProgram extends JFrame {
 		MyShipProgram p = new MyShipProgram();
 		p.run();
 	}
-	  
+	
 
 }
