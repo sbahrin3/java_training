@@ -38,7 +38,6 @@ public class MyShipProgram extends JFrame {
 			ship.animate();
 			ship.move();
 			astroid.move();
-			laser.move();
 			astroid.collideWithLaser();
 
 			
@@ -62,10 +61,10 @@ public class MyShipProgram extends JFrame {
 		
 		
 		Ship() {
-			img = Toolkit.getDefaultToolkit().getImage("C:/sprites/ship.png");
-			images[0] = Toolkit.getDefaultToolkit().getImage("C:/sprites/ship1.png");
-			images[1] = Toolkit.getDefaultToolkit().getImage("C:/sprites/ship2.png");
-			images[2] = Toolkit.getDefaultToolkit().getImage("C:/sprites/ship3.png");
+			img = Toolkit.getDefaultToolkit().getImage("c:/sprites/ship.png");
+			images[0] = Toolkit.getDefaultToolkit().getImage("c:/sprites/ship1.png");
+			images[1] = Toolkit.getDefaultToolkit().getImage("c:/sprites/ship2.png");
+			images[2] = Toolkit.getDefaultToolkit().getImage("c:/sprites/ship3.png");
 		}
 		
 		
@@ -78,6 +77,9 @@ public class MyShipProgram extends JFrame {
 			}
 			else {
 				x = x;
+			}
+			if ( fired ) {
+				laser.move();
 			}
 		}
 		
@@ -95,7 +97,7 @@ public class MyShipProgram extends JFrame {
 		
 		void fire() {
 			fired = true;
-			File soundFile = new File("C:/sprites/laser.wav");
+			File soundFile = new File("c:/sprites/laser.wav");
 			try {
 				
 				AudioInputStream audio = AudioSystem.getAudioInputStream(soundFile);
@@ -116,29 +118,41 @@ public class MyShipProgram extends JFrame {
 	
 	class Astroid {
 		Image img;
-		Image imgExplosion;
+		Image imgNormal;
+		Image imgExploded;
 		int x = 200;
 		int y = 10;
 		int d = 0;
 		boolean exploded = false;
+		int explodeTime = 0;
 		
 		Astroid() {
-			img = Toolkit.getDefaultToolkit().getImage("C:/sprites/asteroid.png");
-			imgExplosion = Toolkit.getDefaultToolkit().getImage("C:/sprites/explosion.png");
+			imgNormal = Toolkit.getDefaultToolkit().getImage("c:/sprites/asteroid2.png");
+			imgExploded = Toolkit.getDefaultToolkit().getImage("c:/sprites/asteroid3.png");
+			img = imgNormal;
 		}
 		
 		void move() {
-			if ( !exploded ) {
-				if ( d == 0 ) {
-					x = x - 10;
-				} else {
-					x = x + 10;
-				}
-				if ( x < 0 ) {
-					d = 1;
-				}
-				if ( x > 700 ) {
-					d = 0;
+			
+			if ( d == 0 ) {
+				x = x - 10;
+			} else {
+				x = x + 10;
+			}
+			if ( x < 0 ) {
+				d = 1;
+			}
+			if ( x > 700 ) {
+				d = 0;
+			}
+			
+			if ( exploded ) {
+				explodeTime++;
+				if ( explodeTime == 30 ) {
+					exploded = false;
+					explodeTime = 0;
+					
+					img = imgNormal;
 				}
 			}
 		}
@@ -154,14 +168,9 @@ public class MyShipProgram extends JFrame {
 			}
 			if ( hitX && hitY ) {
 				exploded = true;
-				System.out.println("Collision happened");
+				img = imgExploded;
+				laser.x = -100;
 			}
-			if ( exploded ) {
-				img = imgExplosion;
-				astroid.x = 100;
-				astroid.y = -100;
-			}
-
 		}
 
 	}
@@ -175,7 +184,7 @@ public class MyShipProgram extends JFrame {
 		int laserSpeed = 1;
 		
 		Laser() {
-			img = Toolkit.getDefaultToolkit().getImage("C:/sprites/laser.png");
+			img = Toolkit.getDefaultToolkit().getImage("c:/sprites/laser.png");
 		}
 		
 		void move() {
@@ -190,6 +199,7 @@ public class MyShipProgram extends JFrame {
 				}
 				
 			}
+			
 		}
 		
 		void animate() {
@@ -254,3 +264,4 @@ public class MyShipProgram extends JFrame {
 	
 
 }
+ 
