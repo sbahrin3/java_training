@@ -222,7 +222,7 @@ public class MyShipProgram extends JFrame {
 		
 		add(canvas);
 
-		Timer t = new Timer(30, new ActionListener() {
+		Timer t = new Timer(20, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				repaint();
